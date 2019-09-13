@@ -2,13 +2,17 @@
 
 import socket
 import ssl
+import datetime
 
-# Config
+# Connection config
 server_ip = ('irc.chat.twitch.tv', 6697)
 channel = '#'
+
+# Bot credentials
 username = ''
 token = ''
 
+# Social media
 discord = 'https://discord.gg/'
 
 
@@ -30,9 +34,9 @@ def main():
             if len(line) > 2:
                 user = (line[1].split('!'))[0]
                 msg = line[2]
+                msg_time = datetime.datetime.now().strftime('%H:%M')
 
-                print('-' * 50)
-                print(f'{user}: {msg}')
+                print(f'({msg_time}) {user}: {msg}')
 
                 if msg[:1] == '!':
                     msg = msg[1:].lower()
@@ -49,7 +53,6 @@ def main():
 
 def send_message(sock, msg):
     sock.send(bytes(f'PRIVMSG {channel} :{msg}\r\n', 'utf-8'))
-    print(f'{username}: {msg}')
 
 
 def sys_message(sock, msg):
