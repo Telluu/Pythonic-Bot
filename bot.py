@@ -10,10 +10,17 @@ channel = '#'
 
 # Bot credentials
 username = ''
-token = ''
+token = 'oauth:'
 
 # Social media
 discord = 'https://discord.gg/'
+
+# Commands
+commands = {
+    'discord': discord,
+    'ping': 'pong Kappa',
+    'ding': 'dong Kappa'
+}
 
 
 def main():
@@ -36,19 +43,13 @@ def main():
                 msg = line[2]
                 msg_time = datetime.datetime.now().strftime('%H:%M')
 
-                print(f'({msg_time}) {user}: {msg}')
-
                 if msg[:1] == '!':
-                    msg = msg[1:].lower()
+                    cmd = msg[1:].lower()
 
-                    if msg == 'discord':
-                        send_message(sock, discord)
+                    if cmd in commands:
+                        send_message(sock, commands.get(cmd))
 
-                    elif msg == 'ping':
-                        send_message(sock, 'pong Kappa')
-
-                    elif msg == 'ding':
-                        send_message(sock, 'dong Kappa')
+                print(f'({msg_time}) {user}: {msg}')
 
 
 def send_message(sock, msg):
