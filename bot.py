@@ -1,13 +1,15 @@
 #!/usr/bin/python3
 
 import sys
+import time
+import datetime
 import socket
 import ssl
-import datetime
-import time
+
 
 # Connection config
-server_ip = ('irc.chat.twitch.tv', 6697)
+host = 'irc.chat.twitch.tv'
+port = 6697
 channel = '#'
 
 # Bot credentials
@@ -31,9 +33,9 @@ commands = {
 def main():
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock = ssl.wrap_socket(sock)
-    print(f'Connecting to {ip}...')
+    print(f'Connecting to {host}:{port}...')
     try:
-        sock.connect(server_ip)
+        sock.connect((host, port))
         print('Connection established!')
     except:
         print('Connection failed!')
@@ -41,7 +43,7 @@ def main():
         time.sleep(3)
         sys.exit()
 
-    print(f'Attepting to login to channel {channel}')
+    print(f'Attepting login to channel {channel}')
     sys_message(sock, f'PASS {token}')
     sys_message(sock, f'NICK {username}')
     sys_message(sock, f'JOIN {channel}')
@@ -62,9 +64,8 @@ def main():
                     cmd = msg[len(prefix):].lower()
 
                     if cmd == 'commands':
-                        avail_commands = ', '.join(
-                            [prefix + command for command in commands])
-                        send_message(sock, avail_commands)
+                        send_message(sock, ', '.join(
+                            [prefix + command for command in commands]))
                     elif cmd in commands:
                         send_message(sock, commands.get(cmd))
 
