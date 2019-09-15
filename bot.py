@@ -31,7 +31,7 @@ commands = {
 def main():
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock = ssl.wrap_socket(sock)
-    print(f'Connecting to {ip}...')
+    print(f'Connecting to {server_ip}...')
     try:
         sock.connect(server_ip)
         print('Connection established!')
