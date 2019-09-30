@@ -50,27 +50,31 @@ def main():
     sys_message(sock, f'JOIN {channel}')
 
     while True:
-        for line in str(sock.recv(4096)).split('\\r\\n'):
-            line = line.split(':', 2)
+        try:
+            for line in str(sock.recv(4096)).split('\\r\\n'):
+                line = line.split(':', 2)
 
-            if 'PING' in line[0]:
-                sys_message(sock, f'PONG :{line[1]}')
+                if 'PING' in line[0]:
+                    sys_message(sock, f'PONG :{line[1]}')
 
-            elif len(line) > 2:
-                user = (line[1].split('!'))[0]
-                msg = line[2]
-                timestamp = datetime.datetime.now().strftime('%H:%M')
+                elif len(line) > 2:
+                    user = (line[1].split('!'))[0]
+                    msg = line[2]
+                    timestamp = datetime.datetime.now().strftime('%H:%M')
 
-                if msg[:len(prefix)] == prefix:
-                    cmd = msg[len(prefix):].lower()
+                    if msg[:len(prefix)] == prefix:
+                        cmd = msg[len(prefix):].lower()
 
-                    if cmd == 'commands':
-                        send_message(sock, ', '.join(
-                            [prefix + command for command in commands]))
-                    elif cmd in commands:
-                        send_message(sock, commands.get(cmd))
+                        if cmd == 'commands':
+                            send_message(sock, ', '.join(
+                                [prefix + command for command in commands]))
+                        elif cmd in commands:
+                            send_message(sock, commands.get(cmd))
 
-                print(f'({timestamp}) {user}: {msg}')
+                    print(f'({timestamp}) {user}: {msg}')
+        except:
+            print('Lost connection, trying to reconnect.')
+            main()
 
 
 def send_message(sock, msg):
